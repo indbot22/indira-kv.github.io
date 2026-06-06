@@ -357,16 +357,11 @@
 
   /* CASE STUDIES */
   #work { background: var(--paper); }
-.cases-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-}
-@media (max-width: 768px) {
   .cases-grid {
-    grid-template-columns: 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
   }
-}
   .case-card {
     background: var(--white);
     padding: 2.5rem;
@@ -436,6 +431,17 @@
     letter-spacing: 0.05em;
     color: var(--muted);
     text-transform: uppercase;
+  }
+
+  /* card 05 spans 2 cols on desktop only */
+  .case-card-wide {
+    grid-column: span 2;
+  }
+  .case-card-wide .case-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: start;
   }
 
   /* MODAL */
@@ -694,11 +700,46 @@
   }
   .timeline-item.current .timeline-dot { animation: pulse-dot 2s ease infinite; }
 
+  /* =====================
+     RESPONSIVE - MOBILE
+  ===================== */
   @media (max-width: 900px) {
+    /* Hero */
     .hero { grid-template-columns: 1fr; }
-    .hero-left { border-right: none; border-bottom: 1px solid var(--rule); }
-    .about-grid, .cases-grid, .skills-grid, .edu-grid { grid-template-columns: 1fr; }
+    .hero-left { border-right: none; border-bottom: 1px solid var(--rule); padding: 8vh 6vw; }
+    .hero-right { padding: 6vh 6vw; }
+
+    /* Nav */
     nav .nav-links { display: none; }
+
+    /* About */
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+
+    /* Case studies — single column, card 05 no longer spans 2 */
+    .cases-grid { grid-template-columns: 1fr; }
+    .case-card-wide { grid-column: span 1; }
+    .case-card-wide .case-inner {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .case-card-wide .case-inner .case-num { font-size: 3.5rem; margin-bottom: 1rem; }
+
+    /* Skills */
+    .skills-grid { grid-template-columns: 1fr; }
+
+    /* Education */
+    .edu-grid { grid-template-columns: 1fr; }
+
+    /* General padding */
+    section { padding: 5rem 6vw; }
+  }
+
+  @media (max-width: 480px) {
+    section { padding: 4rem 5vw; }
+    .case-card { padding: 1.8rem; }
+    .case-metrics { gap: 1rem; flex-wrap: wrap; }
+    .hero-ctas { flex-direction: column; }
+    .btn-primary, .btn-outline { text-align: center; }
   }
 </style>
 </head>
@@ -925,8 +966,9 @@
       </div>
     </div>
 
-    <div class="case-card" onclick="openModal('uber')" style="grid-column: span 2;">
-      <div style="display:grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: start;">
+    <!-- Card 05: spans 2 cols on desktop, 1 col on mobile via CSS class -->
+    <div class="case-card case-card-wide" onclick="openModal('uber')">
+      <div class="case-inner">
         <div class="case-num" style="font-size:5rem;">05</div>
         <div>
           <div class="case-company">Uber · B2B2C · Healthcare Logistics</div>
@@ -1285,12 +1327,10 @@ function closeModalOnOverlay(e) {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// Intersection Observer for animations
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      // Skill bars
       entry.target.querySelectorAll('.skill-fill').forEach(bar => {
         bar.style.width = bar.dataset.width + '%';
       });
@@ -1300,7 +1340,6 @@ const observer = new IntersectionObserver((entries) => {
 
 document.querySelectorAll('.fade-up, .stat-box, .timeline-item, .skill-group').forEach(el => observer.observe(el));
 
-// Also trigger skill bars when skills section enters view
 const skillsSection = document.getElementById('skills');
 if (skillsSection) {
   const skillObs = new IntersectionObserver((entries) => {
