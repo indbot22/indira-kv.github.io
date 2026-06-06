@@ -357,11 +357,17 @@
 
   /* CASE STUDIES */
   #work { background: var(--paper); }
+.cases-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+@media (max-width: 768px) {
   .cases-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px;
+    grid-template-columns: 1fr;
   }
+}
   .case-card {
     background: var(--white);
     padding: 2.5rem;
